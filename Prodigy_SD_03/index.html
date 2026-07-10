@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContactSphere — Contact Management System</title>
+  <meta name="description" content="A modern glassmorphism contact management system built with vanilla HTML, CSS and JavaScript." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar glass">
+      <div class="brand">
+        <div class="brand-logo"><i class="fa-solid fa-address-book"></i></div>
+        <div>
+          <h1 class="brand-name">ContactSphere</h1>
+          <p class="brand-tag">Manage smarter</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-filter="all"><i class="fa-solid fa-users"></i><span>All Contacts</span><em class="count" id="count-all">0</em></button>
+        <button class="nav-item" data-filter="favorites"><i class="fa-solid fa-star"></i><span>Favorites</span><em class="count" id="count-fav">0</em></button>
+        <div class="nav-heading">Categories</div>
+        <button class="nav-item" data-filter="family"><i class="fa-solid fa-house-user"></i><span>Family</span><em class="count" id="count-family">0</em></button>
+        <button class="nav-item" data-filter="friends"><i class="fa-solid fa-user-group"></i><span>Friends</span><em class="count" id="count-friends">0</em></button>
+        <button class="nav-item" data-filter="work"><i class="fa-solid fa-briefcase"></i><span>Work</span><em class="count" id="count-work">0</em></button>
+        <button class="nav-item" data-filter="college"><i class="fa-solid fa-graduation-cap"></i><span>College</span><em class="count" id="count-college">0</em></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn ghost" id="btnImport"><i class="fa-solid fa-file-import"></i> Import</button>
+        <button class="btn ghost" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
+        <input type="file" id="fileImport" accept="application/json" hidden />
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar glass">
+        <button class="icon-btn only-mobile" id="btnSidebar" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
+
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search by name, phone or email..." />
+          <kbd>/</kbd>
+        </div>
+
+        <div class="topbar-actions">
+          <select id="sortSelect" class="select" aria-label="Sort contacts">
+            <option value="recent">Recently Added</option>
+            <option value="az">Name A–Z</option>
+            <option value="za">Name Z–A</option>
+          </select>
+          <button class="icon-btn" id="btnTheme" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+        </div>
+      </header>
+
+      <section class="stats">
+        <div class="stat glass">
+          <div class="stat-icon grad-1"><i class="fa-solid fa-users"></i></div>
+          <div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Total Contacts</div>
+          </div>
+        </div>
+        <div class="stat glass">
+          <div class="stat-icon grad-2"><i class="fa-solid fa-star"></i></div>
+          <div>
+            <div class="stat-value" id="statFav">0</div>
+            <div class="stat-label">Favorites</div>
+          </div>
+        </div>
+        <div class="stat glass">
+          <div class="stat-icon grad-3"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          <div>
+            <div class="stat-value" id="statRecent">0</div>
+            <div class="stat-label">Added this week</div>
+          </div>
+        </div>
+        <div class="stat glass">
+          <div class="stat-icon grad-4"><i class="fa-solid fa-layer-group"></i></div>
+          <div>
+            <div class="stat-value" id="statCats">0</div>
+            <div class="stat-label">Categories used</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contacts-wrap glass">
+        <div class="contacts-header">
+          <h2 id="viewTitle">All Contacts</h2>
+          <span class="chip" id="viewCount">0 contacts</span>
+        </div>
+
+        <div id="contactsGrid" class="contacts-grid"></div>
+
+        <div id="emptyState" class="empty hidden">
+          <div class="empty-illus">
+            <i class="fa-regular fa-address-card"></i>
+          </div>
+          <h3>No contacts yet</h3>
+          <p>Click the <b>+</b> button to add your first contact.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button class="fab" id="btnAdd" aria-label="Add contact">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+
+  <div class="modal" id="contactModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card glass" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Add Contact</h3>
+        <button class="icon-btn" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="contactForm" class="form" novalidate>
+        <input type="hidden" id="contactId" />
+
+        <div class="field">
+          <label for="name">Full Name</label>
+          <div class="input-wrap"><i class="fa-solid fa-user"></i>
+            <input type="text" id="name" placeholder="e.g. Aditi Sharma" autocomplete="off" />
+          </div>
+          <small class="err" data-err="name"></small>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <div class="input-wrap"><i class="fa-solid fa-phone"></i>
+              <input type="tel" id="phone" placeholder="10-digit number" autocomplete="off" />
+            </div>
+            <small class="err" data-err="phone"></small>
+          </div>
+          <div class="field">
+            <label for="email">Email Address</label>
+            <div class="input-wrap"><i class="fa-solid fa-envelope"></i>
+              <input type="email" id="email" placeholder="name@example.com" autocomplete="off" />
+            </div>
+            <small class="err" data-err="email"></small>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="category">Category</label>
+            <div class="input-wrap"><i class="fa-solid fa-tag"></i>
+              <select id="category">
+                <option value="family">Family</option>
+                <option value="friends">Friends</option>
+                <option value="work">Work</option>
+                <option value="college">College</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="favorite">Mark as favorite</label>
+            <label class="switch">
+              <input type="checkbox" id="favorite" />
+              <span class="slider"></span>
+              <em>Add to Favorites ⭐</em>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" data-close>Cancel</button>
+          <button type="submit" class="btn primary" id="submitBtn"><i class="fa-solid fa-check"></i> Save Contact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="confirmModal" aria-hidden="true">
+    <div class="modal-backdrop" data-cclose></div>
+    <div class="modal-card glass sm" role="dialog" aria-modal="true">
+      <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3>Delete this contact?</h3>
+      <p class="muted">This action cannot be undone — but you'll get a quick undo option.</p>
+      <div class="modal-actions center">
+        <button class="btn ghost" data-cclose>Cancel</button>
+        <button class="btn danger" id="confirmDelete"><i class="fa-solid fa-trash"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
