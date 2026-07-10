@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter | ProDigy InfoTech</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🌡️</text></svg>">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌡️</span>
+                <span class="logo-text">TempConvert</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>Temperature Converter</h1>
+            <p class="subtitle">Convert temperatures between Celsius, Fahrenheit, and Kelvin</p>
+        </header>
+
+        <main class="main-content">
+            <div class="converter-card">
+                <div class="input-section">
+                    <label for="temperature" class="label">Temperature Value</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="temperature" 
+                            class="temp-input" 
+                            placeholder="Enter temperature"
+                            step="0.01"
+                        >
+                        <span class="input-icon">📊</span>
+                    </div>
+                </div>
+
+                <div class="units-row">
+                    <div class="unit-group">
+                        <label for="fromUnit" class="label">From</label>
+                        <select id="fromUnit" class="unit-select">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+
+                    <button class="swap-btn" id="swapBtn" title="Swap units">
+                        <span class="swap-icon">⇅</span>
+                    </button>
+
+                    <div class="unit-group">
+                        <label for="toUnit" class="label">To</label>
+                        <select id="toUnit" class="unit-select">
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-convert" id="convertBtn">Convert</button>
+                    <button class="btn btn-reset" id="resetBtn">Reset</button>
+                </div>
+
+                <div class="result-section" id="resultSection" style="display: none;">
+                    <div class="result-card">
+                        <div class="result-item">
+                            <span class="result-label">Input:</span>
+                            <span class="result-value" id="inputValue">-</span>
+                        </div>
+                        <div class="result-arrow">→</div>
+                        <div class="result-item">
+                            <span class="result-label">Output:</span>
+                            <span class="result-value" id="outputValue">-</span>
+                        </div>
+                    </div>
+
+                    <div class="result-footer">
+                        <button class="btn btn-copy" id="copyBtn">
+                            <span class="copy-icon">📋</span> Copy Result
+                        </button>
+                        <div class="success-message" id="successMessage" style="display: none;">
+                            ✓ Copied to clipboard!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="error-message" id="errorMessage" style="display: none;"></div>
+            </div>
+
+            <div class="history-section">
+                <div class="history-header">
+                    <h2>Conversion History</h2>
+                    <button class="btn-clear-history" id="clearHistoryBtn" title="Clear history">🗑️</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="history-empty">No conversions yet. Start converting!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
